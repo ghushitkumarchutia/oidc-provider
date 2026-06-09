@@ -4,6 +4,7 @@ import cors from "cors";
 import path from "node:path";
 import { discoveryRouter } from "./modules/discovery/discovery.routes.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
+import { tokenRouter } from "./modules/token/token.routes.js";
 import { errorHandler } from "./common/middleware.js";
 
 const app = express();
@@ -21,6 +22,7 @@ app.get("/health", (_, res) =>
 
 app.use(discoveryRouter);
 app.use(authRouter);
+app.use(tokenRouter);
 
 app.use(errorHandler as express.ErrorRequestHandler);
 
