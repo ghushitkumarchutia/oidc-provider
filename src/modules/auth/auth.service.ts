@@ -26,12 +26,12 @@ interface ConsentSession {
 const consentSessions = new Map<string, ConsentSession>();
 
 export async function validateAuthorizeParams(params: {
-  response_type?: string;
-  client_id?: string;
-  redirect_uri?: string;
-  scope?: string;
-  code_challenge?: string;
-  code_challenge_method?: string;
+  response_type?: string | undefined;
+  client_id?: string | undefined;
+  redirect_uri?: string | undefined;
+  scope?: string | undefined;
+  code_challenge?: string | undefined;
+  code_challenge_method?: string | undefined;
 }) {
   if (!params.client_id) {
     return { valid: false, error: "client_id is required.", safe: false };

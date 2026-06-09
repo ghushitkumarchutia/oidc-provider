@@ -11,9 +11,9 @@ export interface IDTokenClaims {
   email?: string;
   email_verified?: boolean;
   name?: string;
-  given_name?: string;
-  family_name?: string;
-  picture?: string;
+  given_name?: string | undefined;
+  family_name?: string | undefined;
+  picture?: string | undefined;
 }
 
 export interface AccessTokenClaims {
