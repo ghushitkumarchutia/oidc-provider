@@ -1,6 +1,6 @@
 # OIDC Provider
 
-A from-scratch OpenID Connect provider implementing the full Authorization Code flow with PKCE, RS256-signed JWTs, refresh token rotation with reuse detection, and scope-driven identity claims — built without any third-party auth libraries.
+A custom OpenID Connect (OIDC) Identity Provider (IdP) built from scratch. It does not rely on heavy third-party authentication platforms (like Auth0) or off-the-shelf packages (like the `oidc-provider` npm package); instead, it manually implements the core OIDC specifications—specifically the **Authorization Code Flow with PKCE**.
 
 ## Why This Exists
 
