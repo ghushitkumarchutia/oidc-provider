@@ -13,7 +13,10 @@ async function seed() {
       clientId: "demo-app",
       clientSecret: clientSecretHash,
       clientName: "Demo Application",
-      redirectUris: JSON.stringify(["http://localhost:3000/callback"]),
+      redirectUris: JSON.stringify([
+        "http://localhost:3000/callback",
+        "https://oidc-provider-yvdb.onrender.com/callback.html",
+      ]),
       grantTypes: JSON.stringify(["authorization_code", "refresh_token"]),
     })
     .onConflictDoNothing();

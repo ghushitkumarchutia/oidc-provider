@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.resolve("public")));
 app.use(cors());
 
-app.get("/", (_, res) => res.json({ message: "OIDC Provider" }));
+app.use(express.static(path.resolve("demo-client")));
 app.get("/health", (_, res) =>
   res.json({ message: "Server is healthy", healthy: true }),
 );

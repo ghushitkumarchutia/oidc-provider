@@ -261,10 +261,10 @@
     </div>
 
     <script>
-      const PROVIDER = "http://localhost:8080";
+      const PROVIDER = window.location.origin;
       const CLIENT_ID = "demo-app";
       const CLIENT_SECRET = "demo-secret";
-      const REDIRECT_URI = "http://localhost:3000/callback";
+      const REDIRECT_URI = `${window.location.origin}/callback.html`;
 
       const statusEl = document.getElementById("status");
       const contentEl = document.getElementById("content");
