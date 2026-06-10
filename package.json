@@ -1,7 +1,7 @@
 {
   "name": "oidc-provider",
   "version": "1.0.0",
-  "description": "",
+  "description": "A from-scratch OIDC provider implementing Authorization Code flow with PKCE, refresh token rotation, and RS256 signed JWTs without third-party auth libraries.",
   "main": "index.js",
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
