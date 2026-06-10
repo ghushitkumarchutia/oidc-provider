@@ -13,22 +13,61 @@ import {
 const router: RouterType = Router();
 
 function errorPage(message: string) {
-  return `<!DOCTYPE html>
+  return `<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Authorization Error</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,sans-serif;background:#09090b;color:#fafafa;display:flex;align-items:center;justify-content:center;min-height:100dvh}
-.card{max-width:360px;padding:2rem;background:#18181b;border:1px solid #27272a;border-radius:12px;text-align:center}
-h1{font-size:1.25rem;font-weight:600;margin-bottom:0.75rem}
-p{color:#a1a1aa;font-size:0.875rem;line-height:1.5}
-</style>
-</head>
-<body><div class="card"><h1>Authorization Error</h1><p>${message}</p></div></body>
-</html>`;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authorization Error</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #000000;
+        color: #fafafa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100dvh;
+        padding: 1rem;
+      }
+      .card {
+        width: 100%;
+        max-width: 360px;
+        padding: clamp(1.5rem, 5vw, 2rem) clamp(1.5rem, 6vw, 3rem);
+        background: #121212;
+        border: 1px solid #27272a;
+        text-align: center;
+      }
+      h1 {
+        font-size: clamp(1.125rem, 4vw, 1.25rem);
+        font-weight: 500;
+        margin-bottom: 0.75rem;
+      }
+      p {
+        color: #a1a1aa;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Authorization Error</h1>
+      <p>${message}</p>
+    </div>
+  </body>
+</html>
+`;
 }
 
 router.get("/authorize", async (req, res) => {
@@ -38,7 +77,9 @@ router.get("/authorize", async (req, res) => {
     redirect_uri: req.query.redirect_uri as string | undefined,
     scope: req.query.scope as string | undefined,
     code_challenge: req.query.code_challenge as string | undefined,
-    code_challenge_method: req.query.code_challenge_method as string | undefined,
+    code_challenge_method: req.query.code_challenge_method as
+      | string
+      | undefined,
   };
 
   const state = req.query.state as string | undefined;
@@ -66,8 +107,10 @@ router.get("/authorize", async (req, res) => {
   loginParams.set("client_name", result.clientName!);
   if (state) loginParams.set("state", state);
   if (nonce) loginParams.set("nonce", nonce);
-  if (params.code_challenge) loginParams.set("code_challenge", params.code_challenge);
-  if (params.code_challenge_method) loginParams.set("code_challenge_method", params.code_challenge_method);
+  if (params.code_challenge)
+    loginParams.set("code_challenge", params.code_challenge);
+  if (params.code_challenge_method)
+    loginParams.set("code_challenge_method", params.code_challenge_method);
 
   return res.redirect(`/login.html?${loginParams}`);
 });
@@ -86,7 +129,9 @@ router.post("/authorize/callback", authLimiter, async (req, res) => {
   } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required." });
+    return res
+      .status(400)
+      .json({ message: "Email and password are required." });
   }
 
   const user = await authenticateUser(email, password);
@@ -125,7 +170,9 @@ router.post("/authorize/consent", async (req, res) => {
 
   const session = getConsentSession(sessionId);
   if (!session) {
-    return res.status(400).json({ message: "Invalid or expired consent session." });
+    return res
+      .status(400)
+      .json({ message: "Invalid or expired consent session." });
   }
 
   const redirectUrl = new URL(session.redirectUri);
@@ -156,16 +203,27 @@ router.post("/signup", async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   if (!firstName || !email || !password) {
-    return res.status(400).json({ message: "First name, email, and password are required." });
+    return res
+      .status(400)
+      .json({ message: "First name, email, and password are required." });
   }
 
   if (password.length < 8) {
-    return res.status(400).json({ message: "Password must be at least 8 characters." });
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 8 characters." });
   }
 
-  const created = await registerUser(firstName, lastName || null, email, password);
+  const created = await registerUser(
+    firstName,
+    lastName || null,
+    email,
+    password,
+  );
   if (!created) {
-    return res.status(409).json({ message: "An account with this email already exists." });
+    return res
+      .status(409)
+      .json({ message: "An account with this email already exists." });
   }
 
   return res.status(201).json({ message: "Account created successfully." });
