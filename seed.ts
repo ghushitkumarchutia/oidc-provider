@@ -19,7 +19,15 @@ async function seed() {
       ]),
       grantTypes: JSON.stringify(["authorization_code", "refresh_token"]),
     })
-    .onConflictDoNothing();
+    .onConflictDoUpdate({
+      target: clientsTable.clientId,
+      set: {
+        redirectUris: JSON.stringify([
+          "http://localhost:3000/callback",
+          "https://oidc-provider-yvdb.onrender.com/callback.html",
+        ]),
+      },
+    });
 
   console.log("Seeded client: demo-app / demo-secret");
 
