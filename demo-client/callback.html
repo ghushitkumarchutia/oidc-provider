@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Callback — Demo Client</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #ffffff;
+        --fg: #09090b;
+        --muted: #71717a;
+        --border: #e4e4e7;
+        --card-bg: #ffffff;
+        --card-shadow:
+          0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --radius: 0.5rem;
+        --btn-bg: #18181b;
+        --btn-fg: #fafafa;
+        --btn-hover: #27272a;
+        --btn-outline-border: #e4e4e7;
+        --btn-outline-hover: #f4f4f5;
+        --section-bg: #f4f4f5;
+        --success: #22c55e;
+        --error: #ef4444;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #000000;
+          --fg: #fafafa;
+          --muted: #a1a1aa;
+          --border: #27272a;
+          --card-bg: #121212;
+          --card-shadow:
+            0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+          --btn-bg: #fafafa;
+          --btn-fg: #18181b;
+          --btn-hover: #e4e4e7;
+          --btn-outline-border: #3f3f46;
+          --btn-outline-hover: #27272a;
+          --section-bg: #27272a;
+          --success: #4ade80;
+          --error: #f87171;
+        }
+      }
+
+      body {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--fg);
+        min-height: 100dvh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 2rem 1rem;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 480px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        box-shadow: var(--card-shadow);
+        padding: clamp(1.25rem, 5vw, 2rem);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      h1 {
+        font-size: clamp(1.125rem, 4vw, 1.25rem);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .status {
+        font-size: 0.8125rem;
+        color: var(--muted);
+        margin-top: 0.35rem;
+      }
+
+      .status.ok {
+        color: var(--success);
+      }
+      .status.fail {
+        color: var(--error);
+      }
+
+      .section {
+        margin-bottom: 1rem;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .section-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        padding: 0.625rem 0.75rem;
+        background: var(--section-bg);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .section-body {
+        padding: 0.75rem;
+        font-size: 0.8125rem;
+        line-height: 1.6;
+      }
+
+      .claim-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.25rem 0;
+        gap: 0.5rem;
+      }
+
+      .claim-key {
+        color: var(--muted);
+        font-weight: 500;
+        flex-shrink: 0;
+      }
+
+      .claim-value {
+        font-family: ui-monospace, monospace;
+        font-size: 0.75rem;
+        max-width: 260px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: right;
+        min-width: 0;
+      }
+
+      .token-value {
+        font-family: ui-monospace, monospace;
+        font-size: 0.6875rem;
+        word-break: break-all;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1.25rem;
+      }
+
+      .btn {
+        flex: 1;
+        height: 2.25rem;
+        font-family: inherit;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          opacity 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-primary {
+        color: var(--btn-fg);
+        background: var(--btn-bg);
+        border: none;
+      }
+      .btn-primary:hover {
+        background: var(--btn-hover);
+      }
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-outline {
+        color: var(--fg);
+        background: transparent;
+        border: 1px solid var(--btn-outline-border);
+      }
+      .btn-outline:hover {
+        background: var(--btn-outline-hover);
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="header">
+        <h1>Authorization Callback</h1>
+        <p class="status" id="status">Processing…</p>
+      </div>
+
+      <div id="content" class="hidden">
+        <div class="section" id="userinfoSection">
+          <div class="section-title">User Info</div>
+          <div class="section-body" id="userinfoBody"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">ID Token Claims</div>
+          <div class="section-body" id="idTokenBody"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Access Token</div>
+          <div class="section-body">
+            <p class="token-value" id="accessTokenValue"></p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Refresh Token</div>
+          <div class="section-body">
+            <p class="token-value" id="refreshTokenValue"></p>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="refreshBtn">
+            Refresh Tokens
+          </button>
+          <button class="btn btn-outline" id="restartBtn">Start Over</button>
+        </div>
+      </div>
+
+      <div id="errorContent" class="hidden">
+        <div class="actions">
+          <button class="btn btn-outline" id="retryBtn" style="flex: 1">
+            Back to Demo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const PROVIDER = "http://localhost:8080";
+      const CLIENT_ID = "demo-app";
+      const CLIENT_SECRET = "demo-secret";
+      const REDIRECT_URI = "http://localhost:3000/callback";
+
+      const statusEl = document.getElementById("status");
+      const contentEl = document.getElementById("content");
+      const errorContentEl = document.getElementById("errorContent");
+
+      let currentRefreshToken = null;
+
+      function decodeJwt(token) {
+        const payload = token.split(".")[1];
+        return JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+      }
+
+      function renderClaims(container, claims) {
+        container.innerHTML = "";
+        for (const [key, value] of Object.entries(claims)) {
+          const row = document.createElement("div");
+          row.className = "claim-row";
+          row.innerHTML = `<span class="claim-key">${key}</span><span class="claim-value">${value}</span>`;
+          container.appendChild(row);
+        }
+      }
+
+      function showError(msg) {
+        statusEl.textContent = msg;
+        statusEl.className = "status fail";
+        errorContentEl.classList.remove("hidden");
+      }
+
+      function displayTokens(tokens) {
+        const idClaims = decodeJwt(tokens.id_token);
+        renderClaims(document.getElementById("idTokenBody"), idClaims);
+        document.getElementById("accessTokenValue").textContent =
+          tokens.access_token;
+        document.getElementById("refreshTokenValue").textContent =
+          tokens.refresh_token;
+        currentRefreshToken = tokens.refresh_token;
+      }
+
+      async function exchangeCode(code, codeVerifier) {
+        const body = new URLSearchParams({
+          grant_type: "authorization_code",
+          code: code,
+          redirect_uri: REDIRECT_URI,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          code_verifier: codeVerifier,
+        });
+
+        const res = await fetch(`${PROVIDER}/token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: body.toString(),
+        });
+
+        return res.json();
+      }
+
+      async function fetchUserInfo(accessToken) {
+        const res = await fetch(`${PROVIDER}/userinfo`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        return res.json();
+      }
+
+      async function refreshTokens() {
+        if (!currentRefreshToken) return;
+
+        const refreshBtn = document.getElementById("refreshBtn");
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = "Refreshing…";
+
+        const body = new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: currentRefreshToken,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+        });
+
+        try {
+          const res = await fetch(`${PROVIDER}/token`, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: body.toString(),
+          });
+
+          const data = await res.json();
+
+          if (data.error) {
+            statusEl.textContent = `Refresh failed: ${data.error_description}`;
+            statusEl.className = "status fail";
+            return;
+          }
+
+          displayTokens(data);
+
+          const userinfo = await fetchUserInfo(data.access_token);
+          renderClaims(document.getElementById("userinfoBody"), userinfo);
+
+          statusEl.textContent = "Tokens refreshed successfully";
+          statusEl.className = "status ok";
+        } catch {
+          statusEl.textContent = "Refresh request failed";
+          statusEl.className = "status fail";
+        } finally {
+          refreshBtn.disabled = false;
+          refreshBtn.textContent = "Refresh Tokens";
+        }
+      }
+
+      async function handleCallback() {
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.has("error")) {
+          showError(`Authorization denied: ${params.get("error")}`);
+          return;
+        }
+
+        const code = params.get("code");
+        const state = params.get("state");
+        const savedState = sessionStorage.getItem("oidc_state");
+        const codeVerifier = sessionStorage.getItem("oidc_code_verifier");
+
+        if (!code) {
+          showError("No authorization code received");
+          return;
+        }
+
+        if (state !== savedState) {
+          showError("State mismatch — possible CSRF attack");
+          return;
+        }
+
+        sessionStorage.removeItem("oidc_state");
+        sessionStorage.removeItem("oidc_nonce");
+        sessionStorage.removeItem("oidc_code_verifier");
+
+        try {
+          const tokens = await exchangeCode(code, codeVerifier);
+
+          if (tokens.error) {
+            showError(`Token exchange failed: ${tokens.error_description}`);
+            return;
+          }
+
+          displayTokens(tokens);
+
+          const userinfo = await fetchUserInfo(tokens.access_token);
+          renderClaims(document.getElementById("userinfoBody"), userinfo);
+
+          statusEl.textContent = "Authentication successful";
+          statusEl.className = "status ok";
+          contentEl.classList.remove("hidden");
+        } catch {
+          showError("Token exchange request failed");
+        }
+      }
+
+      document
+        .getElementById("refreshBtn")
+        .addEventListener("click", refreshTokens);
+      document
+        .getElementById("restartBtn")
+        .addEventListener("click", () => (window.location.href = "/"));
+      document
+        .getElementById("retryBtn")
+        .addEventListener("click", () => (window.location.href = "/"));
+
+      handleCallback();
+    </script>
+  </body>
+</html>
