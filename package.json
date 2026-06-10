@@ -8,7 +8,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "seed": "tsx seed.ts"
+    "seed": "tsx seed.ts",
+    "demo:client": "pnpm dlx serve demo-client -l 3000 -c serve.json"
   },
   "keywords": [],
   "author": "",
