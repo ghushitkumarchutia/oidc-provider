@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authorize Application</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #ffffff;
+        --fg: #09090b;
+        --muted: #71717a;
+        --border: #e4e4e7;
+        --card-bg: #ffffff;
+        --card-shadow:
+          0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --radius: 0.5rem;
+        --btn-bg: #18181b;
+        --btn-fg: #fafafa;
+        --btn-hover: #27272a;
+        --btn-outline-bg: transparent;
+        --btn-outline-border: #e4e4e7;
+        --btn-outline-hover: #f4f4f5;
+        --scope-bg: #f4f4f5;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #000000;
+          --fg: #fafafa;
+          --muted: #a1a1aa;
+          --border: #27272a;
+          --input-bg: #000000;
+          --card-bg: #121212;
+          --card-shadow:
+            0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+          --btn-bg: #fafafa;
+          --btn-fg: #18181b;
+          --btn-hover: #e4e4e7;
+          --btn-outline-bg: transparent;
+          --btn-outline-border: #3f3f46;
+          --btn-outline-hover: #27272a;
+          --scope-bg: #27272a;
+        }
+      }
+
+      body {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--fg);
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 360px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        box-shadow: var(--card-shadow);
+        padding: 2rem;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.375rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.3;
+      }
+
+      .subtitle {
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin-top: 0.35rem;
+      }
+
+      .app-name {
+        font-weight: 600;
+        color: var(--fg);
+      }
+
+      .permissions {
+        margin-bottom: 1.5rem;
+      }
+
+      .permissions-label {
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+      }
+
+      .scope-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+      }
+
+      .scope-item {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+        background: var(--scope-bg);
+      }
+
+      .scope-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .btn {
+        width: 100%;
+        height: 2.375rem;
+        font-family: inherit;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          opacity 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        color: var(--btn-fg);
+        background: var(--btn-bg);
+      }
+      .btn-primary:hover {
+        background: var(--btn-hover);
+      }
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-outline {
+        color: var(--fg);
+        background: var(--btn-outline-bg);
+        border: 1px solid var(--btn-outline-border);
+      }
+      .btn-outline:hover {
+        background: var(--btn-outline-hover);
+      }
+
+      .spinner {
+        display: none;
+        width: 14px;
+        height: 14px;
+        border: 2px solid color-mix(in srgb, var(--btn-fg) 30%, transparent);
+        border-top-color: var(--btn-fg);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 1rem;
+        }
+        .card {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="header">
+        <h1>Authorize access</h1>
+        <p class="subtitle">
+          <span class="app-name" id="appName"></span> wants to access your
+          account
+        </p>
+      </div>
+
+      <div class="permissions">
+        <p class="permissions-label">This will allow the application to:</p>
+        <ul class="scope-list" id="scopeList"></ul>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="allowBtn">
+          <span class="spinner" id="spinner"></span>
+          <span id="allowText">Allow</span>
+        </button>
+        <button class="btn btn-outline" id="denyBtn">Deny</button>
+      </div>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session");
+      const clientName = params.get("client_name") || "Application";
+      const scope = params.get("scope") || "openid";
+
+      document.getElementById("appName").textContent = clientName;
+
+      const scopeList = document.getElementById("scopeList");
+      const scopes = scope.split(" ");
+
+      const scopeDescriptions = {
+        email: {
+          label: "View your email address",
+          icon: '<svg class="scope-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+        },
+        profile: {
+          label: "View your profile information",
+          icon: '<svg class="scope-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>',
+        },
+      };
+
+      scopes.forEach((s) => {
+        const desc = scopeDescriptions[s];
+        if (!desc) return;
+
+        const li = document.createElement("li");
+        li.className = "scope-item";
+        li.innerHTML = desc.icon + "<span>" + desc.label + "</span>";
+        scopeList.appendChild(li);
+      });
+
+      const allowBtn = document.getElementById("allowBtn");
+      const denyBtn = document.getElementById("denyBtn");
+      const spinner = document.getElementById("spinner");
+      const allowText = document.getElementById("allowText");
+
+      async function submitConsent(approved) {
+        allowBtn.disabled = true;
+        denyBtn.disabled = true;
+
+        if (approved) {
+          spinner.style.display = "block";
+          allowText.textContent = "Authorizing…";
+        }
+
+        try {
+          const res = await fetch("/authorize/consent", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ session: sessionId, approved }),
+          });
+
+          const data = await res.json().catch(() => ({}));
+
+          if (data.redirect) {
+            window.location.href = data.redirect;
+          }
+        } catch {
+          allowBtn.disabled = false;
+          denyBtn.disabled = false;
+          spinner.style.display = "none";
+          allowText.textContent = "Allow";
+        }
+      }
+
+      allowBtn.addEventListener("click", () => submitConsent(true));
+      denyBtn.addEventListener("click", () => submitConsent(false));
+    </script>
+  </body>
+</html>
